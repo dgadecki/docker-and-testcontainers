@@ -3,9 +3,9 @@ spring:
   application:
     name: event
   datasource:
-    url: jdbc:postgresql://localhost:5432/event
-    username: event_db_connect
-    password: event_db_connect
+    url: jdbc:postgresql://localhost:5432/docker_and_testcontainer_db
+    username: docker_and_testcontainer_user
+    password: docker_and_testcontainer_password
   jpa:
     database: postgresql
     open-in-view: false
@@ -14,13 +14,8 @@ spring:
   rabbitmq:
     host: localhost
     port: 5672
-    username: event_connect
-    password: event_connect
-    listener:
-      simple:
-        retry:
-          enabled: true
-          max-attempts: 1
+    username: docker_and_testcontainer_user
+    password: docker_and_testcontainer_password
 
 # Server configuration
 server:
