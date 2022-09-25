@@ -20,8 +20,6 @@ spring:
 # Server configuration
 server:
   port: 8585
-  servlet:
-    context-path: /event
 
 # Rest clients
 rest-client:
