@@ -6,6 +6,7 @@ import pl.dgadecki.dockerandtestcontainers.business.event.domain.service.EventSe
 import pl.dgadecki.dockerandtestcontainers.business.event.domain.service.EventTicketService;
 import pl.dgadecki.dockerandtestcontainers.business.event.dto.command.BookTicketCommand;
 import pl.dgadecki.dockerandtestcontainers.business.event.dto.query.EventsQuery;
+import pl.dgadecki.dockerandtestcontainers.business.event.dto.query.TicketPriceQuery;
 
 @Transactional
 @RequiredArgsConstructor
@@ -22,5 +23,10 @@ public class EventFacadeAdapter implements EventFacade {
     @Override
     public void bookTicket(BookTicketCommand bookTicketCommand) {
         eventTicketService.bookTicket(bookTicketCommand);
+    }
+
+    @Override
+    public TicketPriceQuery findTicketPrice(Long ticketId, String discountCode) {
+        return eventTicketService.findTicketPrice(ticketId, discountCode);
     }
 }

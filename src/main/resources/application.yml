@@ -27,3 +27,8 @@ server:
   port: 8585
   servlet:
     context-path: /event
+
+# Rest clients
+rest-client:
+  discount:
+    url: http://localhost:8080

@@ -21,4 +21,12 @@ public interface EventGateway {
      * @param bookTicketNotification {@link BookTicketNotification} with data for notification.
      */
     void publishBookTicketNotification(BookTicketNotification bookTicketNotification);
+
+    /**
+     * Returns the discount value as a percentage for the provided discount code.
+     *
+     * @param discountCode the discount code for which the discount is to be found
+     * @return value of the discount in percentage
+     */
+    Long getDiscountByDiscountCode(String discountCode);
 }

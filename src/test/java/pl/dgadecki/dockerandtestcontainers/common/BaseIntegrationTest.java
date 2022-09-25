@@ -12,9 +12,12 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.RabbitMQContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.lifecycle.Startables;
+import org.testcontainers.utility.DockerImageName;
 
 import java.util.Objects;
 
@@ -41,10 +44,13 @@ public abstract class BaseIntegrationTest {
             .withBinding(RabbitMQConstants.NOTIFICATION_EXCHANGE_NAME, RabbitMQConstants.EMAIL_NOTIFICATION_QUEUE_NAME)
             .withBinding(RabbitMQConstants.NOTIFICATION_EXCHANGE_NAME, RabbitMQConstants.SMS_NOTIFICATION_QUEUE_NAME);
 
+    private static final GenericContainer<?> DISCOUNT_SERVICE_CONTAINER = new GenericContainer(DockerImageName.parse("discount-service:0.0.1"))
+            .withExposedPorts(8080)
+            .waitingFor(Wait.forLogMessage(".*Started DiscountServiceForDevSessionApplication.*", 1));
 
     @DynamicPropertySource
     static void configureApplication(DynamicPropertyRegistry dynamicPropertyRegistry) {
-        Startables.deepStart(POSTGRE_SQL_CONTAINER, RABBIT_MQ_CONTAINER).join();
+        Startables.deepStart(POSTGRE_SQL_CONTAINER, RABBIT_MQ_CONTAINER, DISCOUNT_SERVICE_CONTAINER).join();
 
         // PostgreSQL
         dynamicPropertyRegistry.add("spring.datasource.url", POSTGRE_SQL_CONTAINER::getJdbcUrl);
@@ -56,6 +62,9 @@ public abstract class BaseIntegrationTest {
         dynamicPropertyRegistry.add("spring.rabbitmq.port", RABBIT_MQ_CONTAINER::getAmqpPort);
         dynamicPropertyRegistry.add("spring.rabbitmq.username", RABBIT_MQ_CONTAINER::getAdminUsername);
         dynamicPropertyRegistry.add("spring.rabbitmq.password", RABBIT_MQ_CONTAINER::getAdminPassword);
+
+        // Discount service
+        dynamicPropertyRegistry.add("rest-client.discount.url", () -> "http://" + DISCOUNT_SERVICE_CONTAINER.getHost() + ":" + DISCOUNT_SERVICE_CONTAINER.getFirstMappedPort());
     }
 
     @Autowired

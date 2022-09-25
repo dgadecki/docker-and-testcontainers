@@ -11,6 +11,7 @@ import pl.dgadecki.dockerandtestcontainers.business.event.domain.service.EventTi
 import pl.dgadecki.dockerandtestcontainers.business.event.domain.service.adapter.EventGatewayAdapter;
 import pl.dgadecki.dockerandtestcontainers.business.event.domain.service.adapter.EventServiceAdapter;
 import pl.dgadecki.dockerandtestcontainers.business.event.domain.service.adapter.EventTickerServiceAdapter;
+import pl.dgadecki.dockerandtestcontainers.business.external.discount.DiscountServiceClient;
 import pl.dgadecki.dockerandtestcontainers.business.user.domain.UserFacade;
 
 @Configuration
@@ -18,12 +19,14 @@ public class EventConfig {
 
     @Bean
     public EventFacade eventFacade(UserFacade userFacade,
+                                   DiscountServiceClient discountServiceClient,
                                    EventMessagePublisher eventMessagePublisher,
                                    EventRepository eventRepository,
                                    EventTicketRepository eventTicketRepository) {
         // Services
         EventGateway eventGateway = new EventGatewayAdapter(
                 userFacade,
+                discountServiceClient,
                 eventMessagePublisher
         );
         EventService eventService = new EventServiceAdapter(
