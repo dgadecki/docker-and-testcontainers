@@ -1,0 +1,29 @@
+# Spring configuration
+spring:
+  application:
+    name: event
+  datasource:
+    url: jdbc:postgresql://localhost:5432/event
+    username: event_db_connect
+    password: event_db_connect
+  jpa:
+    database: postgresql
+    open-in-view: false
+  flyway:
+    enabled: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: event_connect
+    password: event_connect
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-attempts: 1
+
+# Server configuration
+server:
+  port: 8585
+  servlet:
+    context-path: /event
